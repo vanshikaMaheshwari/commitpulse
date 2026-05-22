@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { fetchGitHubContributions } from '../../../lib/github';
 import { calculateStreak } from '../../../lib/calculate';
-import { generateNotFoundSVG, generateSVG } from '../../../lib/svg/generator';
+import { generateNotFoundSVG, generateSVG, escapeXML } from '../../../lib/svg/generator';
 import { getSecondsUntilUTCMidnight, getSecondsUntilMidnightInTimezone } from '../../../utils/time';
 import type { BadgeParams } from '../../../types';
 import { themes } from '../../../lib/svg/themes';
@@ -170,7 +170,7 @@ export async function GET(request: Request) {
       <svg xmlns="http://www.w3.org/2000/svg" width="400" height="150">
         <rect width="100%" height="100%" fill="#2d0000" rx="8"/>
         <text x="50%" y="50%" text-anchor="middle" fill="#ffcccc">
-          Error: ${message}
+          Error: ${escapeXML(message)}
         </text>
       </svg>
     `;
