@@ -26,6 +26,7 @@ describe('streakParamsSchema — grace fallback behavior', () => {
     expect(parse({}).grace).toBe(1);
   });
 });
+
 describe('githubParamsSchema', () => {
   it('should pass when username is valid', () => {
     const result = githubParamsSchema.safeParse({
@@ -76,6 +77,7 @@ describe('githubParamsSchema', () => {
     }
   });
 });
+
 describe('streakParamsSchema user validation', () => {
   it('should pass when user is valid', () => {
     const result = streakParamsSchema.safeParse({
@@ -295,6 +297,7 @@ describe('streakParamsSchema', () => {
       expect(result.error.issues[0]?.message).toBe('Invalid GitHub username');
     }
   });
+
   it('should accept delta_format percent', () => {
     const result = streakParamsSchema.safeParse({
       user: 'octocat',
@@ -450,6 +453,7 @@ describe('streakParamsSchema — size fallback behavior', () => {
   it('falls back to "medium" for empty string', () => {
     expect(parse({ size: '' }).size).toBe('medium');
   });
+
   it('should accept org parameter when provided', () => {
     const result = streakParamsSchema.safeParse({
       user: 'octocat',
@@ -463,6 +467,18 @@ describe('streakParamsSchema — size fallback behavior', () => {
     }
   });
 
+  it('should fail when org contains invalid characters', () => {
+    const result = streakParamsSchema.safeParse({
+      user: 'octocat',
+      org: 'invalid_org_name_with_spaces',
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.org?.[0]).toBe('Invalid organization name format');
+    }
+  });
+
   it('should keep org undefined when omitted', () => {
     const result = streakParamsSchema.safeParse({
       user: 'octocat',
@@ -472,6 +488,18 @@ describe('streakParamsSchema — size fallback behavior', () => {
 
     if (result.success) {
       expect(result.data.org).toBeUndefined();
+    }
+  });
+
+  it('should fail when org contains invalid characters or spaces', () => {
+    const result = streakParamsSchema.safeParse({
+      user: 'octocat',
+      org: 'invalid_org_name_with_spaces',
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toBe('Invalid organization name format');
     }
   });
 
@@ -607,6 +635,25 @@ describe('streakParamsSchema — boolean transform fields', () => {
       expect(parse({}).hide_background).toBe(false);
     });
   });
+
+  // ── glow ──────────────────────────────────────────────────────────────────
+  describe('glow', () => {
+    it('returns true when glow="true"', () => {
+      expect(parse({ glow: 'true' }).glow).toBe(true);
+    });
+
+    it('returns true when glow="1"', () => {
+      expect(parse({ glow: '1' }).glow).toBe(true);
+    });
+
+    it('returns false when glow="false"', () => {
+      expect(parse({ glow: 'false' }).glow).toBe(false);
+    });
+
+    it('returns true when glow is omitted', () => {
+      expect(parse({}).glow).toBe(true);
+    });
+  });
 });
 
 describe('ogParamsSchema', () => {
@@ -663,6 +710,15 @@ describe('ogParamsSchema', () => {
     const result = ogParamsSchema.parse({});
     expect(result.user).toBe('unknown');
   });
+
+  it('should fallback to "dark" when an invalid theme is provided', () => {
+    const result = ogParamsSchema.safeParse({ theme: 'nonexistent_theme_name' });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.theme).toBe('dark');
+    }
+  });
 });
 
 describe('streakParamsSchema — view fallback behavior', () => {
@@ -680,6 +736,50 @@ describe('streakParamsSchema — view fallback behavior', () => {
 
   it('defaults to "default" when view is omitted', () => {
     expect(parse({}).view).toBe('default');
+  });
+});
+
+describe('streakParamsSchema — accent parameter HEX color validation', () => {
+  it('rejects an invalid hex color like "#ZZZZZZ" for accent', () => {
+    // #ZZZZZZ contains non-hex characters — must fail schema validation
+    const result = streakParamsSchema.safeParse({
+      user: 'octocat',
+      accent: '#ZZZZZZ',
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects an invalid hex color like "#ZZZZZZ" for accent (Variation 4)', () => {
+    const result = streakParamsSchema.safeParse({
+      user: 'octocat',
+      accent: '#ZZZZZZ',
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects the invalid boundary hex color "#ZZZZZZ" for accent', () => {
+    const result = streakParamsSchema.safeParse({
+      user: 'octocat',
+      accent: '#ZZZZZZ',
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toContain(
+        'accent must be a valid 3 or 6 character hex color without #'
+      );
+    }
+  });
+
+  it('accepts a valid 6-character hex color for accent', () => {
+    const result = streakParamsSchema.safeParse({
+      user: 'octocat',
+      accent: 'ff0000',
+    });
+
+    expect(result.success).toBe(true);
   });
 });
 
@@ -722,5 +822,37 @@ describe('streakParamsSchema — Date Range Boundary Robustness (Variation 1)', 
       expect(result.data.from).toBeUndefined();
       expect(result.data.to).toBeUndefined();
     }
+  });
+});
+
+/* ==========================================================================
+ * TZ PARAMETER — IANA TIMEZONE VALIDATION (VARIATION 4)
+ * ========================================================================== */
+
+describe('streakParamsSchema — tz IANA timezone validation (Variation 4)', () => {
+  it('rejects a fictitious planetary timezone that is not a valid IANA zone', () => {
+    // Mars/Cyonia looks structurally plausible (Region/City format) but does not
+    // exist in the IANA tz database, so Intl.DateTimeFormat must throw and the
+    // schema must surface a field-level validation error.
+    const result = streakParamsSchema.safeParse({
+      user: 'octocat',
+      tz: 'Mars/Cyonia',
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toContain('Invalid timezone');
+    }
+  });
+});
+
+describe('streakParamsSchema — date parameter validation', () => {
+  it('rejects an invalid ISO8601 calendar date format like "2026-15-40"', () => {
+    const result = streakParamsSchema.safeParse({
+      user: 'octocat',
+      date: '2026-15-40',
+    });
+
+    expect(result.success).toBe(false);
   });
 });
