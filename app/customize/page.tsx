@@ -20,7 +20,29 @@ import type {
   Language,
   Timezone,
 } from './types';
+import { useDebounce } from '@/hooks/useDebounce';
 import { getExportSnippet, buildQueryParams } from './utils';
+
+function readNumericSearchParam(
+  searchParams: URLSearchParams,
+  key: string,
+  fallback: number | '',
+  min?: number,
+  max?: number
+): number | '' {
+  const raw = searchParams.get(key);
+  if (!raw) return fallback;
+
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || !Number.isInteger(parsed)) {
+    return fallback;
+  }
+
+  if (min !== undefined && parsed < min) return fallback;
+  if (max !== undefined && parsed > max) return fallback;
+
+  return parsed;
+}
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
@@ -54,6 +76,7 @@ function CustomizePageInner(): ReactElement {
   const [svgState, setSvgState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const trimmedUsername = username.trim();
+  const debouncedUsername = useDebounce(trimmedUsername, 400);
   const hasUsername = trimmedUsername.length > 0;
   const isRandomTheme = theme === 'random';
 
@@ -74,16 +97,16 @@ function CustomizePageInner(): ReactElement {
     setSpeed(searchParams.get('speed') ?? '8s');
     setFont((searchParams.get('font') as Font) ?? 'Inter');
     setYear(searchParams.get('year') ?? '');
-    setRadius(Number(searchParams.get('radius') ?? 8));
+    setRadius(readNumericSearchParam(searchParams, 'radius', 8, 0, 50) as number);
     setSize((searchParams.get('size') as BadgeSize) ?? 'medium');
     setHideTitle(searchParams.get('hide_title') === 'true');
     setHideBackground(searchParams.get('hide_background') === 'true');
     setHideStats(searchParams.get('hide_stats') === 'true');
     setViewMode((searchParams.get('view') as ViewMode) ?? 'default');
     setDeltaFormat((searchParams.get('delta_format') as DeltaFormat) ?? 'percent');
-    setBadgeWidth(searchParams.get('width') ? Number(searchParams.get('width')) : '');
-    setBadgeHeight(searchParams.get('height') ? Number(searchParams.get('height')) : '');
-    setGrace(Number(searchParams.get('grace') ?? 1));
+    setBadgeWidth(readNumericSearchParam(searchParams, 'width', '', 100, 1200));
+    setBadgeHeight(readNumericSearchParam(searchParams, 'height', '', 80, 800));
+    setGrace(readNumericSearchParam(searchParams, 'grace', 1, 0, 7) as number);
     setLanguage((searchParams.get('lang') as Language) ?? 'en');
     setTimezone((searchParams.get('tz') as Timezone) ?? 'UTC');
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -146,7 +169,32 @@ function CustomizePageInner(): ReactElement {
     language,
     timezone,
   });
-  const previewSrc = `/api/streak?${queryString}`;
+
+  const previewQueryString = buildQueryParams({
+    username: debouncedUsername,
+    theme,
+    bgHex,
+    accentHex,
+    textHex,
+    scale,
+    speed,
+    font,
+    year,
+    radius,
+    size,
+    hideTitle,
+    hideBackground,
+    hideStats,
+    viewMode,
+    deltaFormat,
+    badgeWidth,
+    badgeHeight,
+    grace,
+    language,
+    timezone,
+  });
+
+  const previewSrc = `/api/streak?${previewQueryString}`;
 
   // On change sync state to URL
   useEffect(() => {
@@ -163,6 +211,13 @@ function CustomizePageInner(): ReactElement {
       return;
     }
     if (!validateGitHubUsername(trimmedUsername)) {
+      setSvgContent('');
+      setSvgState('error');
+      setErrorMessage("That doesn't look like a valid GitHub username");
+      return;
+    }
+
+    if (!validateGitHubUsername(debouncedUsername)) {
       setSvgContent('');
       setSvgState('error');
       setErrorMessage("That doesn't look like a valid GitHub username");
@@ -235,7 +290,7 @@ function CustomizePageInner(): ReactElement {
       });
 
     return () => controller.abort();
-  }, [previewSrc, hasUsername, trimmedUsername]);
+  }, [previewSrc, hasUsername, debouncedUsername, trimmedUsername]);
 
   const exportSnippet = getExportSnippet(exportFormat, queryString);
 
@@ -305,6 +360,9 @@ function CustomizePageInner(): ReactElement {
         `Unable to copy the ${exportFormat === 'markdown' ? 'Markdown' : 'HTML'} snippet.`
       );
     }
+  };
+  const handleDownloadimage = () => {
+    alert('Download image functionality coming soon!');
   };
 
   return (
