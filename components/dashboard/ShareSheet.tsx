@@ -332,14 +332,13 @@ export default function ShareSheet({ username, isOpen, onClose, exportData }: Sh
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
           {/* Backdrop — hidden from assistive tech */}
           <motion.div
             ref={overlayRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
             className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm"
             aria-hidden="true"
           />
@@ -369,7 +368,10 @@ export default function ShareSheet({ username, isOpen, onClose, exportData }: Sh
                 {/* Text block */}
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <p id="share-sheet-title" className="text-[13px] font-semibold text-zinc-900 dark:text-zinc-50 leading-tight truncate">
+                    <p
+                      id="share-sheet-title"
+                      className="text-[13px] font-semibold text-zinc-900 dark:text-zinc-50 leading-tight truncate"
+                    >
                       {username}
                     </p>
                     {/* GitHub mark */}
