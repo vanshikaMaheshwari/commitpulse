@@ -125,7 +125,6 @@ export default async function DashboardPage({
       name: r.name,
       url: `https://github.com/${username}/${r.name}`,
       pushedAt: r.pushed_at ?? r.updated_at ?? null,
-      isPrivate: r.private ?? false,
     }));
   } catch {
     allRepos = [];

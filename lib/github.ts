@@ -21,7 +21,6 @@ interface GitHubRepo {
   forks_count?: number;
   updated_at?: string;
   pushed_at?: string;
-  private?: boolean;
   owner?: { login: string };
   created_at?: string;
 }
@@ -482,7 +481,6 @@ function sanitizeRepo(repo: GitHubRepo): GitHubRepo {
     forks_count: repo.forks_count,
     updated_at: repo.updated_at,
     pushed_at: repo.pushed_at,
-    private: repo.private,
     created_at: repo.created_at,
   };
 }

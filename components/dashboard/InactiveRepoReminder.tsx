@@ -112,11 +112,6 @@ export default function InactiveRepoReminder({ repos }: InactiveRepoReminderProp
                   >
                     {repo.name}
                   </a>
-                  {repo.isPrivate && (
-                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full border text-amber-600 dark:text-amber-500 bg-amber-500/10 border-amber-500/20 shrink-0">
-                      Private
-                    </span>
-                  )}
                 </div>
 
                 <span className="text-xs text-gray-500 dark:text-zinc-400 shrink-0 min-w-[90px] text-right">
