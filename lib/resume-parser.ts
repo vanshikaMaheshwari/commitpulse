@@ -120,6 +120,7 @@ async function extractTextFromBuffer(buffer: Buffer, mimeType: string): Promise<
   if (mimeType === 'application/pdf') {
     try {
       if (buffer.toString('utf-8', 0, 4) === '%PDF') {
+        // @ts-expect-error - Dynamic import types missing
         const pdf = await import('pdf-parse');
         const pdfParser = ((pdf as unknown as { default?: unknown }).default || pdf) as (
           dataBuffer: Buffer,
@@ -139,6 +140,7 @@ async function extractTextFromBuffer(buffer: Buffer, mimeType: string): Promise<
   ) {
     try {
       if (buffer.toString('utf-8', 0, 2) === 'PK') {
+        // @ts-expect-error - Dynamic import types missing
         const mammothModule = await import('mammoth');
         const mammothParser = ((mammothModule as unknown as { default?: unknown }).default ||
           mammothModule) as typeof mammothModule;
