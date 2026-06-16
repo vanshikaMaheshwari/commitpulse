@@ -1121,7 +1121,7 @@ export function generateWrappedSVG(
   const isPredefinedFont = isBundledFont(sanitizedFont);
   const statsFont = selectedFont || '"Space Grotesk", sans-serif';
   const radius = sanitizeRadius(params.radius, 8);
-
+  const wrappedLabels = getLabels(params.lang);
   const width = params.width || 420;
   const height = params.height || 260;
 
@@ -1309,19 +1309,19 @@ export function generateWrappedSVG(
 
   <g transform="translate(25, 120)">
     <text x="0" y="15" class="total-commits" ${accentClass}${glowAttr}>${stats.totalContributions}</text>
-    <text x="2" y="38" class="total-label" ${textClass}>TOTAL CONTRIBUTIONS</text>
+    <text x="2" y="38" class="total-label" ${textClass}>${wrappedLabels.TOTAL_CONTRIBUTIONS}</text>
   </g>
 
   <line x1="185" y1="80" x2="185" y2="230" stroke="${params.autoTheme ? 'var(--cp-accent)' : accent}" stroke-opacity="0.12" stroke-width="1" stroke-dasharray="3 3" />
 
   <g transform="translate(210, 80)">
     <g transform="translate(0, 20)">
-      <text x="0" y="0" class="grid-label" ${textClass}>TOP LANGUAGE</text>
+      <text x="0" y="0" class="grid-label" ${textClass}>${wrappedLabels.TOP_LANGUAGE}</text>
       <text x="0" y="20" class="grid-val" ${accentClass}>${escapeXML(stats.topLanguage || 'Unknown')}</text>
     </g>
 
     <g transform="translate(130, 20)">
-      <text x="0" y="0" class="grid-label" ${textClass}>WEEKEND GRIND</text>
+      <text x="0" y="0" class="grid-label" ${textClass}>${wrappedLabels.WEEKEND_GRIND}</text>
       <g transform="translate(25, 24)">
         <circle cx="0" cy="0" r="14" stroke="${params.autoTheme ? 'var(--cp-text)' : text}" stroke-opacity="0.1" stroke-width="2.5" fill="none" />
         <circle cx="0" cy="0" r="14" stroke="${params.autoTheme ? 'var(--cp-accent)' : accent}" stroke-width="3" fill="none"
@@ -1333,7 +1333,7 @@ export function generateWrappedSVG(
   </g>
 
   <g transform="translate(210, 150)">
-    <text x="0" y="0" class="grid-label" ${textClass}>PEAK DAY</text>
+    <text x="0" y="0" class="grid-label" ${textClass}>${wrappedLabels.PEAK_DAY}</text>
     <text x="0" y="20" class="grid-val" ${textClass}>
       ${stats.highestDailyCount} COMMITS
       <tspan font-size="10.5" font-weight="500" ${accentClass} opacity="0.8">ON ${escapeXML(formattedPeakDate.toUpperCase())}</tspan>
@@ -1341,7 +1341,7 @@ export function generateWrappedSVG(
   </g>
 
   <g transform="translate(210, 205)">
-    <text x="0" y="0" class="grid-label" ${textClass}>BUSIEST MONTH</text>
+    <text x="0" y="0" class="grid-label" ${textClass}>${wrappedLabels.BUSIEST_MONTH}</text>
     <text x="0" y="20" class="grid-val" ${textClass}>
       ${escapeXML(monthName)}
       <tspan font-size="11" font-weight="500" ${accentClass}>🔥</tspan>

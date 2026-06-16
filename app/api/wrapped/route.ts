@@ -57,6 +57,7 @@ export async function GET(request: Request) {
       width,
       height,
       tz,
+      lang,
     } = parseResult.data;
 
     const year = customYear || new Date().getFullYear().toString();
@@ -93,6 +94,7 @@ export async function GET(request: Request) {
       width,
       height,
       scale: 'linear',
+      lang,
     };
 
     const ip = getClientIp(request);

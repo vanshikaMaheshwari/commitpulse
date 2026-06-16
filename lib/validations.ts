@@ -599,6 +599,7 @@ export const wrappedParamsSchema = z.object({
     .max(39, { message: 'GitHub username cannot exceed 39 characters' })
     .regex(GITHUB_USERNAME_REGEX, {
       message: 'Invalid GitHub username',
+      lang: z.enum(supportedLanguages).catch('en').default('en'),
     }),
   year: z
     .string()
