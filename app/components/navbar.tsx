@@ -7,6 +7,7 @@ import { useGlowEffect } from '@/hooks/useGlowEffect';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useThemeToggle } from './theme-switch';
 import { useTranslation, LANGUAGE_LABELS, type Language } from '@/context/TranslationContext';
+import NavbarSearch from '@/components/NavbarSearch';
 
 function GithubMark() {
   return (
@@ -193,6 +194,7 @@ export default function Navbar() {
             </Link>
 
             <div className="hidden items-center gap-2 md:flex">
+              <NavbarSearch />
               <LanguageSelector />
               {NAV_LINKS.map((link) => (
                 <a
@@ -287,6 +289,9 @@ export default function Navbar() {
           {open ? (
             <div className="border-t border-gray-100 dark:border-white/10 px-4 py-4 md:hidden">
               <ul className="space-y-1">
+                <li className="mb-2">
+                  <NavbarSearch variant="mobile" onNavigate={() => setOpen(false)} />
+                </li>
                 <li className="flex items-center justify-between px-4 py-2 border-b border-gray-100 dark:border-white/10 mb-2">
                   <span className="text-sm font-medium text-black/60 dark:text-white/60">
                     Language / Bhasha
