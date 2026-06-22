@@ -1306,7 +1306,7 @@ export default function CompareClient() {
             </div>
           </motion.div>
 
-          {/* Recent Comparison History */}
+          {/* Recent Comparision History */}
           {searches.length > 0 && (
             <div className="max-w-2xl mx-auto mb-8">
               <div className="flex items-center justify-between mb-3">
@@ -1336,7 +1336,7 @@ export default function CompareClient() {
                           setUser1(left);
                           setUser2(right);
 
-                          // Auto-run comparison from history
+                          // Auto-run comparision from history
                           handleCompare(left, right);
                         }
                       }}
