@@ -23,6 +23,8 @@ function isTypingTarget(target: EventTarget | null): boolean {
   );
 }
 
+// Global "g then key" quick-nav shortcuts. Navigates via the App Router, so it
+// must be mounted within a Next.js App Router context (useRouter throws otherwise).
 export function useKeyboardShortcuts() {
   const router = useRouter();
   const waitingForSecondKey = useRef(false);
