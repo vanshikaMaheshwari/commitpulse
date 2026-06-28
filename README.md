@@ -152,7 +152,7 @@ CommitPulse transforms GitHub contribution data into visually engaging and highl
 - **🎨 Theme & Customization**: Multiple built-in themes, custom colors (`bg`, `accent`, `text`), dynamic font selection, adjustable dimensions, border radius, opacity, and system-aware `auto` light/dark theme.
 - **📈 Contribution Analytics**: Current streak and longest streak tracking, monthly contribution summaries, historical year-by-year viewing, and custom grace period configurations.
 - **🔥 Visualization Modes**: Isometric 3D monolith rendering (with ghost city blueprint foundations), GitHub-style heatmap, monthly statistics view, and radar chart view.
-- **🌍 Localization & Accessibility**: Multi-language support (e.g. English, Hindi, Simplified Chinese, Portuguese), timezone-aware calculations, and high-contrast accessibility themes.
+- **🌍 Localization & Accessibility**: Multi-language support (e.g. English, Hindi, Simplified Chinese, Portuguese), timezone-aware calculations via `?tz=Asia/Kolkata`, and high-contrast accessibility themes.
 - **⚔️ Comparison Features**: Side-by-side user-versus-user comparisons using the `versus` query parameter.
 - **⚡ Performance & Reliability**: Real-time GitHub GraphQL integration, UTC-midnight synchronized CDN caching, and ultra-fast edge deployment.
 
