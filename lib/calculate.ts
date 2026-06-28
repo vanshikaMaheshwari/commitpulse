@@ -613,6 +613,7 @@ export function normalizeCalendarToTimezone(
   calendar: ContributionCalendar,
   _targetTimezone: string // retained for backward compatibility with existing callers
 ): ContributionCalendar {
+  void _targetTimezone;
   if (!calendar || !calendar.weeks || calendar.weeks.length === 0) {
     return calendar;
   }
