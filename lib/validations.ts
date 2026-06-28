@@ -767,8 +767,8 @@ export const wrappedParamsSchema = z.object({
     .max(39, { message: 'GitHub username cannot exceed 39 characters' })
     .regex(GITHUB_USERNAME_REGEX, {
       message: 'Invalid GitHub username',
-      lang: z.enum(supportedLanguages).catch('en').default('en'),
     }),
+  lang: z.enum(supportedLanguages).catch('en').default('en'),
   year: z
     .string()
     .optional()
@@ -841,7 +841,7 @@ export const wrappedParamsSchema = z.object({
   refresh: z.string().optional().transform(toRefreshFlag),
   bypassCache: z.string().optional().transform(toRefreshFlag),
   hide_title: z.string().optional().transform(toBooleanFlag),
-  hide_background: z.string().optional().transform(toBooleanFlag), // ✅ Fixed: was toRefreshFlag
+  hide_background: z.string().optional().transform(toBooleanFlag),
   width: dimensionParam('width', 100, 1200),
   height: dimensionParam('height', 80, 800),
   tz: timeZoneParam,
@@ -894,7 +894,7 @@ export const notifyGetSchema = z.object({
     .string({ error: 'Username is required.' })
     .trim()
     .min(1, { message: 'Username is required.' })
-    .max(39, { message: 'GitHub username cannot exceed 39 characters.' })
+    .max(39, { message: 'Username is required.' })
     .regex(GITHUB_USERNAME_REGEX, {
       message: 'Invalid GitHub username format.',
     }),
