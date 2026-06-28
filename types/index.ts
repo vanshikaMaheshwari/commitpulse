@@ -7,7 +7,7 @@
  */
 export type HexColor = string & { __brand: 'HexColor' };
 
-export type Scale = 'linear' | 'log';
+export type Scale = 'linear' | 'log' | 'sqrt';
 
 export type BadgeSize = 'small' | 'medium' | 'large';
 
@@ -269,6 +269,12 @@ export interface BadgeParams {
   /** When true, hides the username title from the badge. */
   hide_title?: boolean;
 
+  /** Custom text to display as the title. */
+  custom_title?: string;
+
+  /** Custom text to display as the subtitle. */
+  custom_subtitle?: string;
+
   /** When true, renders the badge without a background card. */
   hideBackground?: boolean;
 
@@ -290,7 +296,8 @@ export interface BadgeParams {
     | 'radar'
     | 'doughnut'
     | 'pie'
-    | 'activity_graph';
+    | 'activity_graph'
+    | 'commit_clock';
 
   /** Format for the monthly delta indicator. 'percent' shows %, 'absolute' shows raw count, 'both' shows both. */
   delta_format?: 'percent' | 'absolute' | 'both';
